@@ -2,6 +2,9 @@
 
 set -e # Fail the whole script on first error
 
+# Avoid ownership warning when installing packages directly from git
+git config --global --add safe.directory '*'
+
 # Fetch Ruby gem dependencies
 bundle install --path vendor/bundle --with='development test'
 
