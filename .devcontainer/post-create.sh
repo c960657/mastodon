@@ -6,7 +6,9 @@ set -e # Fail the whole script on first error
 git config --global --add safe.directory '*'
 
 # Fetch Ruby gem dependencies
-bundle install --path vendor/bundle --with='development test'
+bundle config set --local path 'vendor/bundle'
+bundle config set --local with 'development test'
+bundle install
 
 # Fetch Javascript dependencies
 yarn install
