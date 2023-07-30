@@ -61,12 +61,12 @@ RUN apt-get update && \
     echo "Etc/UTC" > /etc/localtime && \
     groupadd -g "${GID}" mastodon && \
     useradd -l -u "$UID" -g "${GID}" -m -d /opt/mastodon mastodon && \
+    ln -s /opt/mastodon /mastodon && \
     apt-get -y --no-install-recommends install whois \
         wget \
         procps \
         libssl1.1 \
         libpq5 \
-        imagemagick \
         ffmpeg \
         libjemalloc2 \
         libicu67 \
@@ -77,7 +77,12 @@ RUN apt-get update && \
         tzdata \
         libreadline8 \
         tini && \
-    ln -s /opt/mastodon /mastodon
+    wget https://www.deb-multimedia.org/pool/main/d/deb-multimedia-keyring/deb-multimedia-keyring_2016.8.1_all.deb && \
+    dpkg -i deb-multimedia-keyring_2016.8.1_all.deb && \
+    rm deb-multimedia-keyring_2016.8.1_all.deb && \
+    echo 'deb http://www.deb-multimedia.org bullseye main' >> /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get -y --no-install-recommends install imagemagick-7
 
 # Note: no, cleaning here since Debian does this automatically
 # See the file /etc/apt/apt.conf.d/docker-clean within the Docker image's filesystem
