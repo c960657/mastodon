@@ -5,6 +5,7 @@ Fabricator(:status) do
   text 'Lorem ipsum dolor sit amet'
 
   after_build do |status|
-    status.uri = Faker::Internet.device_token if !status.account.local? && status.uri.nil?
+    status.uri ||= Faker::Internet.device_token unless status.account.local?
+    status.language ||= 'en' if status.account.local?
   end
 end

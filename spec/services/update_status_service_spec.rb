@@ -44,6 +44,28 @@ RSpec.describe UpdateStatusService do
     end
   end
 
+  context 'when language changes' do
+    let(:status) { Fabricate(:status, text: 'Foo', language: 'en') }
+
+    before do
+      subject.call(status, status.account_id, text: 'Foo', language: 'fi')
+    end
+
+    it 'updates language' do
+      expect(status.reload.language).to eq 'fi'
+    end
+  end
+
+  context 'when invalid language is specified' do
+    let(:status) { Fabricate(:status, text: 'Foo', language: 'en') }
+
+    it 'updates language' do
+      expect do
+        subject.call(status, status.account_id, text: 'Foo', language: 'xx')
+      end.to raise_error(ActiveRecord::RecordInvalid)
+    end
+  end
+
   context 'when content warning changes' do
     let(:status) { Fabricate(:status, text: 'Foo', spoiler_text: '') }
     let(:preview_card) { Fabricate(:preview_card) }

@@ -139,13 +139,31 @@ RSpec.describe PostStatusService do
     expect(status.application).to eq application
   end
 
-  it 'creates a status with a language set' do
+  it 'creates a status with the specified language' do
+    account = Fabricate(:account)
+    text = 'Hola'
+
+    status = subject.call(account, text: text, language: 'es')
+
+    expect(status.language).to eq 'es'
+  end
+
+  it 'creates a status with the user default language' do
     account = Fabricate(:account)
     text = 'This is an English text.'
 
     status = subject.call(account, text: text)
 
     expect(status.language).to eq 'en'
+  end
+
+  it 'raises on invalid language' do
+    account = Fabricate(:account)
+    text = 'Lorem ipsum'
+
+    expect do
+      subject.call(account, text: text, language: 'xx')
+    end.to raise_error(ActiveRecord::RecordInvalid)
   end
 
   it 'processes mentions' do
